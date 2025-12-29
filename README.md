@@ -8,9 +8,10 @@ Features
 - Uses Google Web Speed API (SpeechRecognition) to listen and transcribe
 - Uses Ollama to run Llama 3 offline for privacy
 
-Prerequisites
+Requirements
 ------------------------------------
 - Download Python (https://www.python.org/downloads/)
+- Download necessary libraries: pip install customtkinter SpeechRecognition ollama pyaudio
 - Download Ollama (https://ollama.com)
 - Download your AI model (ollama pull llama3). You can use any AI model you desire but you will have to edit the code.
 
