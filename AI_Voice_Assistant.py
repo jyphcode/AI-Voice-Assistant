@@ -36,7 +36,7 @@ class AIAssistant(ctk.CTk): # inheriting from customtkinter as ctk
         self.statusLabel.pack(pady=5)
         
         # button to start listening
-        self.button = ctk.CTkButton(self, text = "Start Listening", font = ("Arial", 15, "bold"), height = 40, command=self.startThread)
+        self.button = ctk.CTkButton(self, text = "Start Listening", font = ("Arial", 14, "bold"), height = 40, command=self.startThread)
         self.button.pack(pady=20)
 
         # box to display our output
@@ -92,7 +92,7 @@ class AIAssistant(ctk.CTk): # inheriting from customtkinter as ctk
                 # reply
                 self.updateStatus("Thinking...", "blue")
 
-                response = ollama.chat(model = 'llama3', messages = [{'role': 'user', 'content': transcribe}]) # deepseek-coder
+                response = ollama.chat(model = 'llama3', messages = [{'role': 'user', 'content': transcribe}])
 
                 reply = response['message']['content']
 
