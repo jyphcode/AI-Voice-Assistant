@@ -7,14 +7,15 @@
 '''
 
 import customtkinter as ctk
-import speech_recognition as sr # pip install SpeechRecognition pyaudio 
-import ollama # ollama needed to run local LLM
-import threading # needed to keep GUI + listening active together
+import speech_recognition as sr
+import ollama 
+import threading 
 
 ctk.set_appearance_mode("system") # can support system/dark/light mode
 ctk.set_default_color_theme("blue") # colors are kinda limited
 
-class AIAssistant(ctk.CTk): # inheriting from customtkinter as ctk
+# inheriting from customTKinter as ctk
+class AIAssistant(ctk.CTk):
     def __init__(self):
         super().__init__()
         
