@@ -4,15 +4,16 @@
     AI Vocie assistant
     This program uses speech recognition from Google Web Speech API
     and Ollama to listen to user's questions and answer them using a locally run LLM.
+    Features to add: Having AI memorize chat history/maybe use TTS/Clear text/Refresh mics
 '''
 
 import customtkinter as ctk
 import speech_recognition as sr
-import ollama 
-import threading 
+import ollama
+import threading
 
-ctk.set_appearance_mode("system") # can support system/dark/light mode
-ctk.set_default_color_theme("blue") # colors are kinda limited
+ctk.set_appearance_mode("System")
+ctk.set_default_color_theme("blue")
 
 class AIAssistant(ctk.CTk):
     def __init__(self):
@@ -25,14 +26,14 @@ class AIAssistant(ctk.CTk):
         self.miclabel = ctk.CTkLabel(self, text="Select Microphone:", font = ("Arial", 14, "bold"))
         self.miclabel.pack(pady=(20,5))
 
-        self.micOptions = self.getMicrophoneList() # need to implement this
+        self.micOptions = self.getMicrophoneList()
         self.micDropdown = ctk.CTkOptionMenu(self, values = self.micOptions)
         self.micDropdown.pack(pady=10)
 
         self.statusLabel = ctk.CTkLabel(self, text="Ready...", text_color="gray")
         self.statusLabel.pack(pady=5)
         
-        self.button = ctk.CTkButton(self, text = "Start Listening", font = ("Arial", 14, "bold"), height = 40, command=self.startThread)
+        self.button = ctk.CTkButton(self, text = "Start Listening", font = ("Arial", 15, "bold"), height = 40, command=self.startThread)
         self.button.pack(pady=20)
 
         self.outputLabel = ctk.CTkLabel(self, text = "Output:", anchor= "w")
@@ -46,17 +47,19 @@ class AIAssistant(ctk.CTk):
             mics = sr.Microphone.list_microphone_names()
             return [f"{i}: {name}" for i, name in enumerate(mics)]
         except:
-            return ["0: Default Microphone"]
+            return ["0: Default Microphone"] #-1: No mic detected
 
     def startThread(self):
         self.button.configure(state = "disabled", text = "Running...")
         self.statusLabel.configure(text="Initializing...", text_color="#3B8ED0")
 
         threading.Thread(target=self.logic).start()
-        
+
+    def updateStatus(self, text, color):
+        self.statusLabel.configure(text=text, text_color=color)
+
     def logic(self):
 
-        # choose our mic
         recognizer = sr.Recognizer()
         transcribe = ""
         reply = ""
@@ -66,7 +69,7 @@ class AIAssistant(ctk.CTk):
             index = int(mic.split(":")[0])
 
             with sr.Microphone(device_index=index) as source:
-                
+
                 self.updateStatus("Adjusting...", "orange")
                 recognizer.adjust_for_ambient_noise(source, duration = 1)
 
@@ -78,7 +81,7 @@ class AIAssistant(ctk.CTk):
 
                 self.textbox.insert("end", f"YOU: {transcribe}\n")
                 self.textbox.see("end")
-
+                
                 self.updateStatus("Thinking...", "blue")
 
                 response = ollama.chat(model = 'llama3', messages = [{'role': 'user', 'content': transcribe}])
@@ -95,9 +98,6 @@ class AIAssistant(ctk.CTk):
 
         finally:
             self.button.configure(state = "normal", text = "Start Listening")
-
-    def updateStatus(self, text, color):
-        self.statusLabel.configure(text=text, text_color=color)
 
 if __name__ == "__main__":
     app = AIAssistant()
